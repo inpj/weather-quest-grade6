@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#101a2e">
-  <meta name="description" content="六年級自然科第一單元：多樣的天氣變化，像素冒險互動式學習。100題題庫，每輪隨機抽10題。">
+  <meta name="description" content="六年級自然科第一單元：多樣的天氣變化，像素冒險互動式學習。100題文字題庫，每輪隨機抽10題。">
   <title>天氣探險隊｜六上自然像素闖關</title>
   <link rel="stylesheet" href="./css/game.css">
 </head>
@@ -21,7 +21,7 @@
         <div class="hero-copy">
           <p class="quest-label">MISSION 01</p><h2>修復失控的「氣象核心」</h2>
           <p>完整題庫共 <strong>100 題</strong>。每一輪先洗牌，再<strong>隨機抽 10 題</strong>；同一輪絕不重複。</p>
-          <p>題型包含單選、複選、拖曳排序與科學資料圖像，角色會隨任務在五大區域間移動，最後一格進入 BOSS 核心戰。</p>
+          <p>題目以<strong>文字閱讀與情境提問</strong>為主，包含單選、複選與文字排序；不使用圖表判讀畫面。角色仍會隨任務在五大區域間移動，最後一格進入 BOSS 核心戰。</p>
           <div class="rule-chips"><span>♥ 3 能量</span><span>★ 每題 100 XP</span><span>💡 提示後 80 XP</span><span>⚔ 第10題 BOSS</span></div>
           <label class="name-label" for="playerName">冒險者代號</label><input id="playerName" maxlength="16" placeholder="例如：雲朵博士" autocomplete="off">
           <div class="button-row"><button id="startBtn" class="pixel-btn primary" type="button">▶ 隨機抽 10 題開始</button><button id="continueBtn" class="pixel-btn" type="button" hidden>▶ 繼續上次進度</button></div>
@@ -34,13 +34,13 @@
       <div class="hud panel"><div><small>冒險者</small><strong id="hudPlayer">---</strong></div><div><small>能量</small><strong id="hudHearts">♥♥♥</strong></div><div><small>XP</small><strong id="hudXp">000</strong></div><div><small>進度</small><strong id="hudProgress">1 / 10</strong></div></div>
       <div class="panel world-panel"><div class="route-head"><b>像素世界地圖</b><span id="worldStatus">定位目前任務中…</span></div><div id="worldMap" class="world-map" aria-label="五大冒險區域"><div class="world-path p1"></div><div class="world-path p2"></div><div class="world-path p3"></div><div class="world-path p4"></div><div class="world-zone forest" data-zone="水氣森林"><span>🌧️</span><b>水氣森林</b></div><div class="world-zone city" data-zone="天氣圖城"><span>🗺️</span><b>天氣圖城</b></div><div class="world-zone canyon" data-zone="鋒面峽谷"><span>🌬️</span><b>鋒面峽谷</b></div><div class="world-zone typhoon" data-zone="颱風之眼"><span>🌀</span><b>颱風之眼</b></div><div class="world-zone tower-zone" data-zone="衛星塔"><span>🛰️</span><b>衛星塔</b></div><div id="worldPlayer" class="world-player" aria-hidden="true">🧑‍🚀</div></div></div>
       <div class="panel route-panel"><div class="route-head"><b>冒險路線</b><span>每格＝1 個氣象晶片</span></div><div id="route" class="route"></div></div>
-      <div id="bossPanel" class="boss-panel" hidden aria-live="polite"><div class="boss-name"><span class="boss-icon">🌀</span><b>BOSS｜氣象核心</b></div><div class="boss-track"><div id="bossHp" class="boss-hp"></div></div><small>最後一題：讀懂證據，擊破核心！</small></div>
-      <article id="questionCard" class="panel question-card"><div class="meta-row"><span id="zoneTag" class="tag">區域</span><span id="skillTag" class="tag">能力</span><span id="typeTag" class="tag alt">題型</span><span id="questionId" class="qid">WX000</span></div><h2 id="topic">讀取氣象情報中…</h2><div id="visualStage" class="visual-stage" hidden></div><div id="passage" class="passage"></div><div id="question" class="question"></div><form id="options" class="options"></form><div class="question-actions"><button id="hintBtn" class="pixel-btn" type="button">💡 提示</button><button id="submitBtn" class="pixel-btn primary" type="button">確認答案</button></div><div id="hintBox" class="feedback hint" hidden></div><div id="feedbackBox" class="feedback" hidden></div><button id="nextBtn" class="pixel-btn primary next-btn" type="button" hidden>下一格 ▶</button></article>
+      <div id="bossPanel" class="boss-panel" hidden aria-live="polite"><div class="boss-name"><span class="boss-icon">🌀</span><b>BOSS｜氣象核心</b></div><div class="boss-track"><div id="bossHp" class="boss-hp"></div></div><small>最後一題：讀懂文字證據，擊破核心！</small></div>
+      <article id="questionCard" class="panel question-card"><div class="meta-row"><span id="zoneTag" class="tag">區域</span><span id="skillTag" class="tag">能力</span><span id="typeTag" class="tag alt">題型</span><span id="questionId" class="qid">WX000</span></div><h2 id="topic">讀取氣象情報中…</h2><div id="passage" class="passage"></div><div id="question" class="question"></div><form id="options" class="options"></form><div class="question-actions"><button id="hintBtn" class="pixel-btn" type="button">💡 提示</button><button id="submitBtn" class="pixel-btn primary" type="button">確認答案</button></div><div id="hintBox" class="feedback hint" hidden></div><div id="feedbackBox" class="feedback" hidden></div><button id="nextBtn" class="pixel-btn primary next-btn" type="button" hidden>下一格 ▶</button></article>
     </section>
 
     <section id="resultScreen" class="screen"><div class="panel result-card"><div id="resultIcon" class="result-icon">🏆</div><p class="quest-label">QUEST COMPLETE</p><h2 id="resultTitle">任務完成</h2><div id="resultStats" class="result-stats"></div><div id="zoneAnalysis" class="analysis"></div><div class="button-row center"><button id="againBtn" class="pixel-btn primary" type="button">🎲 再抽 10 題</button><button id="reviewBtn" class="pixel-btn" type="button">📚 本輪紀錄</button><button id="csvBtn" class="pixel-btn" type="button">⬇ 匯出 CSV</button><button id="jsonBtn" class="pixel-btn" type="button">⬇ 匯出 JSON</button></div><div id="reviewBox" class="review" hidden></div></div></section>
 
-    <footer>六年級自然科互動學習 · 自製像素視覺 · 100題題庫 · 每輪隨機抽10題</footer>
+    <footer>六年級自然科互動學習 · 100題文字題庫 · 每輪隨機抽10題</footer>
   </main>
 
   <dialog id="teacherDialog" class="teacher-dialog"><form method="dialog" class="teacher-head"><div><p class="quest-label">TEACHER MODE</p><h2>教師控制台</h2></div><button class="pixel-btn" value="cancel">關閉 ✕</button></form><p class="teacher-note">此為公開靜態網站的課堂輔助介面，並非密碼保護。學生若查看原始碼仍可能看到答案。</p><div id="teacherSummary" class="teacher-summary"></div><div class="teacher-actions"><button id="teacherCsvBtn" class="pixel-btn" type="button">⬇ 匯出目前作答 CSV</button><button id="teacherJsonBtn" class="pixel-btn" type="button">⬇ 匯出目前作答 JSON</button></div><div class="table-wrap"><table><thead><tr><th>#</th><th>題號</th><th>區域</th><th>主題</th><th>題型</th><th>正確答案</th></tr></thead><tbody id="teacherTable"></tbody></table></div></dialog>
