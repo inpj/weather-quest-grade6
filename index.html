@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101a2e">
+  <title>天氣探險隊｜六上自然像素闖關</title>
+  <link rel="stylesheet" href="./css/game.css">
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">GRADE 6 · SCIENCE QUEST</p>
+        <h1>天氣探險隊</h1>
+        <p class="subtitle">第一單元｜多樣的天氣變化</p>
+      </div>
+      <div class="top-actions">
+        <button id="soundBtn" class="pixel-btn" type="button">♪ 音效：開</button>
+        <button id="resetBtn" class="pixel-btn danger" type="button">↻ 重設</button>
+      </div>
+    </header>
+
+    <section id="startScreen" class="screen active">
+      <div class="panel hero">
+        <div class="pixel-scene" aria-hidden="true">
+          <div class="sun"></div><div class="cloud cloud-a"></div><div class="cloud cloud-b"></div>
+          <div class="mountain mountain-a"></div><div class="mountain mountain-b"></div>
+          <div class="weather-tower"></div><div class="hero-sprite">🧑‍🚀</div>
+        </div>
+        <div class="hero-copy">
+          <p class="quest-label">MISSION 01</p>
+          <h2>修復失控的「氣象核心」</h2>
+          <p>完整題庫共 <strong>50 題</strong>。每一輪會先洗牌，再<strong>隨機抽 10 題</strong>；同一輪不會出現重複題目。</p>
+          <div class="rule-chips"><span>♥ 3 能量</span><span>★ 每題 100 XP</span><span>💡 提示後 80 XP</span></div>
+          <label class="name-label" for="playerName">冒險者代號</label>
+          <input id="playerName" maxlength="16" placeholder="例如：雲朵博士" autocomplete="off">
+          <div class="button-row"><button id="startBtn" class="pixel-btn primary" type="button">▶ 隨機抽 10 題開始</button><button id="continueBtn" class="pixel-btn" type="button" hidden>▶ 繼續上次進度</button></div>
+        </div>
+      </div>
+
+      <div class="zones">
+        <article><b>01 水氣森林</b><small>雲霧、雨雹雪、露霜、水循環與實驗</small></article>
+        <article><b>02 天氣圖城</b><small>衛星雲圖、等壓線、高低氣壓</small></article>
+        <article><b>03 鋒面峽谷</b><small>氣團、冷鋒、暖鋒、滯留鋒</small></article>
+        <article><b>04 颱風之眼</b><small>形成、強度、凱米資料與防災</small></article>
+        <article><b>05 衛星塔</b><small>福爾摩沙衛星科學閱讀</small></article>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen">
+      <div class="hud panel">
+        <div><small>冒險者</small><strong id="hudPlayer">---</strong></div>
+        <div><small>能量</small><strong id="hudHearts">♥♥♥</strong></div>
+        <div><small>XP</small><strong id="hudXp">000</strong></div>
+        <div><small>進度</small><strong id="hudProgress">1 / 10</strong></div>
+      </div>
+
+      <div class="panel route-panel"><div class="route-head"><b>冒險路線</b><span>每格＝1 個氣象晶片</span></div><div id="route" class="route"></div></div>
+
+      <article class="panel question-card">
+        <div class="meta-row"><span id="zoneTag" class="tag">區域</span><span id="skillTag" class="tag">能力</span><span id="questionId" class="qid">WX000</span></div>
+        <h2 id="topic">讀取氣象情報中…</h2>
+        <div id="passage" class="passage"></div>
+        <div id="question" class="question"></div>
+        <form id="options" class="options"></form>
+        <div class="question-actions"><button id="hintBtn" class="pixel-btn" type="button">💡 提示</button><button id="submitBtn" class="pixel-btn primary" type="button">確認答案</button></div>
+        <div id="hintBox" class="feedback hint" hidden></div>
+        <div id="feedbackBox" class="feedback" hidden></div>
+        <button id="nextBtn" class="pixel-btn primary next-btn" type="button" hidden>下一格 ▶</button>
+      </article>
+    </section>
+
+    <section id="resultScreen" class="screen">
+      <div class="panel result-card">
+        <div id="resultIcon" class="result-icon">🏆</div>
+        <p class="quest-label">QUEST COMPLETE</p>
+        <h2 id="resultTitle">任務完成</h2>
+        <div id="resultStats" class="result-stats"></div>
+        <div class="button-row center"><button id="againBtn" class="pixel-btn primary" type="button">🎲 再抽 10 題</button><button id="reviewBtn" class="pixel-btn" type="button">📚 查看本輪紀錄</button></div>
+        <div id="reviewBox" class="review" hidden></div>
+      </div>
+    </section>
+
+    <footer>六年級自然科互動學習 · 自製像素視覺 · 題目依第一單元內容重新編寫</footer>
+  </main>
+  <script src="./js/questions.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
