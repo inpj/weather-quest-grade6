@@ -13,20 +13,10 @@ function currentQ(){return QUESTION_BANK.find(x=>x.id===S.round[S.i])}
 function beep(ok){if(!S.sound)return;try{const C=window.AudioContext||window.webkitAudioContext;const c=new C(),o=c.createOscillator(),g=c.createGain();o.type='square';o.frequency.value=ok?660:180;g.gain.value=.03;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.08)}catch{}}
 function startNew(){S.player=$('playerName').value.trim()||'氣象冒險者';S.round=newRoundIds();S.i=0;S.score=0;S.hearts=3;S.hinted=false;S.answered=false;S.log=[];save();show('gameScreen');render()}
 
-function visualFor(x){
-  if(['WX012'].includes(x.id))return `<div class="visual-title">水循環示意（自製）</div><div class="water-cycle"><div class="cell">🌊 地表水<br>蒸發／蒸散</div><div class="arrow">→</div><div class="cell">☁️ 雲<br>凝結／凝華</div><div class="arrow">→</div><div class="cell">🌧️ 降水</div><div class="arrow">→</div><div class="cell">🏞️ 匯集／滲入</div></div>`;
-  if(['WX016','WX017','WX018','WX019','WX020','WX038','WX039'].includes(x.id))return `<div class="visual-title">簡化地面天氣圖（自製示意）</div><div class="pressure-map"><div class="iso i1"></div><div class="iso i2"></div><div class="iso i3"></div><span class="map-label h">H</span><div class="iso r1"></div><div class="iso r2"></div><span class="map-label l">L</span></div>`;
-  if(['WX025','WX026','WX027','WX028','WX029','WX030'].includes(x.id))return `<div class="visual-title">冷暖氣團交界示意</div><div class="front-diagram"><div class="airmass cold">❄️ 冷氣團<br><small>溫度較低</small></div><div class="front-symbol">◀▲●▶</div><div class="airmass warm">☀️ 暖氣團<br><small>溫度較高</small></div></div>`;
-  if(['WX032','WX033','WX034','WX035','WX036','WX037','WX038','WX039','WX040','WX041','WX042','WX043','WX044','WX045'].includes(x.id))return `<div class="visual-title">颱風任務資料台</div><div class="typhoon-card"><div><div class="typhoon-spiral">🌀</div></div><div><b>觀測關鍵</b><br>低氣壓中心<br>密集等壓線<br>濃密雲系<br>強風、豪雨與防災決策</div></div>`;
-  if(['WX046','WX047','WX048','WX049','WX050'].includes(x.id))return `<div class="visual-title">衛星資料傳遞示意</div><div class="satellite-viz"><div class="sat">🛰️</div><div class="beam">⇣⇣⇣</div><div class="earth">🌏</div></div>`;
-  return '';
-}
-
 function render(){
   const x=currentQ();S.hinted=false;S.answered=false;
   $('hudPlayer').textContent=S.player;$('hudHearts').textContent='♥'.repeat(S.hearts)+'♡'.repeat(3-S.hearts);$('hudXp').textContent=String(S.score).padStart(3,'0');$('hudProgress').textContent=`${S.i+1} / 10`;
   $('zoneTag').textContent=x.zone;$('skillTag').textContent=x.skill;$('typeTag').textContent=TYPE_LABEL[x.type]||x.type;$('questionId').textContent=x.id;$('topic').textContent=x.topic+'｜閱讀任務';$('passage').textContent=x.passage;$('question').textContent=x.question;
-  const visual=visualFor(x);$('visualStage').hidden=!visual;$('visualStage').innerHTML=visual;
   $('hintBox').hidden=true;$('feedbackBox').hidden=true;$('nextBtn').hidden=true;$('hintBtn').disabled=false;$('submitBtn').disabled=false;
   $('bossPanel').hidden=S.i!==9;$('bossHp').style.width='100%';
   if(x.type==='order') renderOrder(x); else renderChoice(x);
@@ -36,7 +26,7 @@ function render(){
 function renderChoice(x){const multi=x.type==='multi';$('options').innerHTML=x.options.map((o,i)=>`<label class="option"><input type="${multi?'checkbox':'radio'}" name="answer" value="${i}"><span><b>${String.fromCharCode(65+i)}.</b> ${o}</span></label>`).join('')}
 function renderOrder(x){
   const items=shuffle(x.options.map((text,i)=>({text,i})));
-  $('options').innerHTML=`<div class="order-note">拖曳卡片調整順序；手機可先點卡片，再點另一張卡片交換位置。</div><div id="dragBank" class="drag-bank">${items.map(v=>`<div class="drag-item" draggable="true" data-index="${v.i}">${v.text}</div>`).join('')}</div>`;
+  $('options').innerHTML=`<div class="order-note">拖曳文字卡調整順序；手機可先點一張，再點另一張交換位置。</div><div id="dragBank" class="drag-bank">${items.map(v=>`<div class="drag-item" draggable="true" data-index="${v.i}">${v.text}</div>`).join('')}</div>`;
   enableDrag();
 }
 function enableDrag(){let dragged=null;document.querySelectorAll('.drag-item').forEach(el=>{el.addEventListener('dragstart',()=>{dragged=el;el.classList.add('dragging')});el.addEventListener('dragend',()=>{el.classList.remove('dragging');dragged=null});el.addEventListener('dragover',e=>e.preventDefault());el.addEventListener('drop',e=>{e.preventDefault();if(dragged&&dragged!==el){const p=el.parentNode;const nodes=[...p.children];const a=nodes.indexOf(dragged),b=nodes.indexOf(el);if(a<b)p.insertBefore(dragged,el.nextSibling);else p.insertBefore(dragged,el)}});el.addEventListener('click',()=>{const chosen=document.querySelector('.drag-item[data-selected="1"]');if(!chosen){el.dataset.selected='1';el.style.borderColor='var(--gold)'}else if(chosen===el){delete el.dataset.selected;el.style.borderColor=''}else{const p=el.parentNode,tmp=document.createElement('span');p.insertBefore(tmp,chosen);p.insertBefore(chosen,el);p.insertBefore(el,tmp);tmp.remove();delete chosen.dataset.selected;chosen.style.borderColor=''}})})}
@@ -64,7 +54,7 @@ function csvEscape(v){v=String(v??'');return '"'+v.replaceAll('"','""')+'"'}
 function exportCSV(){const rows=[['player','index','id','zone','topic','type','correct','hinted','selected','correct_answer','timestamp']];S.log.forEach((r,i)=>{const x=QUESTION_BANK.find(q=>q.id===r.id);rows.push([S.player,i+1,r.id,r.zone,r.topic,TYPE_LABEL[r.type]||r.type,r.correct,r.hinted,answerText(x,r.selected),answerText(x,x.answer),r.ts||''])});download(`weather-quest-${S.player||'student'}.csv`,'\uFEFF'+rows.map(r=>r.map(csvEscape).join(',')).join('\n'),'text/csv;charset=utf-8')}
 function exportJSON(){download(`weather-quest-${S.player||'student'}.json`,JSON.stringify({exportedAt:new Date().toISOString(),state:S},null,2),'application/json')}
 
-function teacher(){const dlg=$('teacherDialog');const done=S.log.filter(r=>r.correct).length;$('teacherSummary').innerHTML=`<div><small>題庫</small><b>50 題</b></div><div><small>本輪</small><b>${S.round.length||0} 題</b></div><div><small>已作答</small><b>${S.log.length} 題</b></div><div><small>目前答對</small><b>${done} 題</b></div>`;$('teacherTable').innerHTML=QUESTION_BANK.map((x,i)=>`<tr><td>${i+1}</td><td>${x.id}</td><td>${x.zone}</td><td>${x.topic}</td><td>${TYPE_LABEL[x.type]||x.type}</td><td>${answerText(x,x.answer)}</td></tr>`).join('');dlg.showModal()}
+function teacher(){const dlg=$('teacherDialog');const done=S.log.filter(r=>r.correct).length;$('teacherSummary').innerHTML=`<div><small>題庫</small><b>${QUESTION_BANK.length} 題</b></div><div><small>本輪</small><b>${S.round.length||0} 題</b></div><div><small>已作答</small><b>${S.log.length} 題</b></div><div><small>目前答對</small><b>${done} 題</b></div>`;$('teacherTable').innerHTML=QUESTION_BANK.map((x,i)=>`<tr><td>${i+1}</td><td>${x.id}</td><td>${x.zone}</td><td>${x.topic}</td><td>${TYPE_LABEL[x.type]||x.type}</td><td>${answerText(x,x.answer)}</td></tr>`).join('');dlg.showModal()}
 
 $('startBtn').onclick=startNew;$('submitBtn').onclick=submit;$('hintBtn').onclick=hint;$('nextBtn').onclick=next;$('againBtn').onclick=()=>{show('startScreen');startNew()};$('reviewBtn').onclick=review;$('csvBtn').onclick=exportCSV;$('jsonBtn').onclick=exportJSON;$('teacherCsvBtn').onclick=exportCSV;$('teacherJsonBtn').onclick=exportJSON;$('teacherBtn').onclick=teacher;
 $('resetBtn').onclick=()=>{if(confirm('放棄目前進度並重新開始？')){localStorage.removeItem(STORAGE_KEY);location.reload()}};$('soundBtn').onclick=()=>{S.sound=!S.sound;$('soundBtn').textContent=S.sound?'♪ 音效：開':'♪ 音效：關';save()};$('continueBtn').onclick=()=>{show('gameScreen');render()};
