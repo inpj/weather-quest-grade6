@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07101f">
+  <meta name="description" content="地面天氣圖大決鬥：用雙人對戰理解冷鋒、暖鋒、滯留鋒與地面天氣圖符號。">
+  <title>地面天氣圖大決鬥｜雙人氣團鋒面對戰</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <div>
+        <p class="kicker">GRADE 6 · SURFACE WEATHER BATTLE</p>
+        <h1>地面天氣圖大決鬥</h1>
+        <p class="subtitle">冷氣團 vs 暖氣團｜把鋒面符號變成真正的招式</p>
+      </div>
+      <nav class="top-actions" aria-label="頁面操作">
+        <a class="ui-btn ghost" href="../">← 回天氣探險隊</a>
+        <button id="soundBtn" class="ui-btn ghost" type="button">♪ 音效：開</button>
+        <button id="helpBtn" class="ui-btn" type="button">? 操作說明</button>
+      </nav>
+    </header>
+
+    <section class="science-strip" aria-label="鋒面科學概念">
+      <article><img src="./assets/cold-front.svg" alt="冷鋒符號"><div><b>冷鋒</b><span>冷氣團主動推進，三角形指向移動方向。</span></div></article>
+      <article><img src="./assets/warm-front.svg" alt="暖鋒符號"><div><b>暖鋒</b><span>暖氣團向冷氣團推進，半圓指向移動方向。</span></div></article>
+      <article><img src="./assets/stationary-front.svg" alt="滯留鋒符號"><div><b>滯留鋒</b><span>兩邊勢力相當，鋒面移動慢，常帶來持續性降雨。</span></div></article>
+    </section>
+
+    <section class="arena-frame">
+      <div class="hud-row">
+        <article class="fighter-card cold-card">
+          <div class="fighter-title"><img src="./assets/high-pressure.svg" alt="高氣壓符號"><div><small>PLAYER 1</small><strong>寒潮・藍鋒</strong></div></div>
+          <div class="bar hp"><span id="p1Hp"></span></div>
+          <div class="meter-line"><span>鋒面能量</span><div class="bar energy"><span id="p1Energy"></span></div><b id="p1Power">0%</b></div>
+        </article>
+
+        <div class="round-box">
+          <span id="roundLabel">ROUND 1</span>
+          <strong id="timer">90</strong>
+          <div class="round-score"><i id="p1Wins"></i><b>VS</b><i id="p2Wins"></i></div>
+        </div>
+
+        <article class="fighter-card warm-card">
+          <div class="fighter-title reverse"><img src="./assets/low-pressure.svg" alt="低氣壓符號"><div><small>PLAYER 2</small><strong>暖流・赤鋒</strong></div></div>
+          <div class="bar hp"><span id="p2Hp"></span></div>
+          <div class="meter-line reverse-line"><b id="p2Power">0%</b><div class="bar energy"><span id="p2Energy"></span></div><span>鋒面能量</span></div>
+        </article>
+      </div>
+
+      <div id="canvasWrap" class="canvas-wrap">
+        <canvas id="game" width="1280" height="720" aria-label="雙人地面天氣圖格鬥遊戲"></canvas>
+        <div id="announcement" class="announcement" aria-live="polite"></div>
+        <div id="startOverlay" class="overlay active">
+          <div class="overlay-card title-card">
+            <p class="eyebrow">SURFACE WEATHER CHART DUEL</p>
+            <h2>鋒面開戰！</h2>
+            <p>冷氣團與暖氣團各自蓄力，把<strong>冷鋒／暖鋒</strong>像波動拳一樣打出去。兩個鋒面力量相同時，會在碰撞處形成<strong>滯留鋒</strong>。</p>
+            <div class="quick-controls">
+              <div><b>P1 寒潮・藍鋒</b><span>A / D 移動　W 跳　S 防禦</span><span>F 近攻　<strong>按住 G 蓄力、放開射冷鋒</strong></span></div>
+              <div><b>P2 暖流・赤鋒</b><span>← / → 移動　↑ 跳　↓ 防禦</span><span>J 近攻　<strong>按住 K 蓄力、放開射暖鋒</strong></span></div>
+            </div>
+            <button id="startBtn" class="ui-btn primary big" type="button">⚔ 開始雙人對戰</button>
+          </div>
+        </div>
+        <div id="endOverlay" class="overlay">
+          <div class="overlay-card end-card">
+            <p class="eyebrow">BATTLE RESULT</p>
+            <h2 id="winnerTitle">勝負已分</h2>
+            <p id="winnerText"></p>
+            <div class="end-actions"><button id="rematchBtn" class="ui-btn primary big" type="button">↻ 再戰一場</button><a href="../" class="ui-btn">回天氣探險隊</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-deck">
+        <article>
+          <b class="cold-text">P1｜寒潮・藍鋒</b>
+          <span><kbd>A</kbd><kbd>D</kbd> 移動　<kbd>W</kbd> 跳　<kbd>S</kbd> 防禦　<kbd>F</kbd> 近攻</span>
+          <span><kbd>G</kbd> 按住蓄力 → 放開發射冷鋒</span>
+        </article>
+        <div class="clash-rule"><img src="./assets/stationary-front.svg" alt=""><div><b>勢均力敵＝滯留鋒</b><span>同級鋒面正面碰撞會停滯 3 秒，並出現持續降雨區。</span></div></div>
+        <article class="right-control">
+          <b class="warm-text">P2｜暖流・赤鋒</b>
+          <span><kbd>←</kbd><kbd>→</kbd> 移動　<kbd>↑</kbd> 跳　<kbd>↓</kbd> 防禦　<kbd>J</kbd> 近攻</span>
+          <span><kbd>K</kbd> 按住蓄力 → 放開發射暖鋒</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="asset-lab">
+      <div class="section-head"><div><p class="kicker">GAME ASSET LAB</p><h2>地面天氣圖符號素材</h2></div><p>素材全部用原創 SVG 重繪，可直接在教學投影片、遊戲或網頁中使用。</p></div>
+      <div class="asset-grid">
+        <a href="./assets/high-pressure.svg"><img src="./assets/high-pressure.svg" alt="高氣壓素材"><b>高氣壓中心 H</b><span>SVG</span></a>
+        <a href="./assets/low-pressure.svg"><img src="./assets/low-pressure.svg" alt="低氣壓素材"><b>低氣壓中心 L</b><span>SVG</span></a>
+        <a href="./assets/isobars.svg"><img src="./assets/isobars.svg" alt="等壓線素材"><b>等壓線</b><span>SVG</span></a>
+        <a href="./assets/cold-front.svg"><img src="./assets/cold-front.svg" alt="冷鋒素材"><b>冷鋒</b><span>SVG</span></a>
+        <a href="./assets/warm-front.svg"><img src="./assets/warm-front.svg" alt="暖鋒素材"><b>暖鋒</b><span>SVG</span></a>
+        <a href="./assets/stationary-front.svg"><img src="./assets/stationary-front.svg" alt="滯留鋒素材"><b>滯留鋒</b><span>SVG</span></a>
+      </div>
+    </section>
+
+    <dialog id="helpDialog" class="help-dialog">
+      <form method="dialog" class="dialog-head"><div><p class="kicker">HOW TO PLAY</p><h2>操作與科學規則</h2></div><button class="ui-btn" value="cancel">關閉 ✕</button></form>
+      <div class="help-grid">
+        <article><h3>① 鋒面蓄力</h3><p>按住 G 或 K 會蓄力。蓄力分 1、2、3 級，鋒面越大、速度與傷害越高。</p></article>
+        <article><h3>② 正面碰撞</h3><p>冷鋒與暖鋒在空中碰撞時，較強者會突破；同級則互相抵銷並形成滯留鋒。</p></article>
+        <article><h3>③ 滯留鋒</h3><p>滯留鋒會停留約 3 秒並產生降雨區。這把「兩氣團勢力相當、鋒面移動慢」直接做成遊戲機制。</p></article>
+        <article><h3>④ 勝負</h3><p>三戰兩勝。時間歸零時生命值較高者勝；近身攻擊或鋒面命中都能削減生命值。</p></article>
+      </div>
+    </dialog>
+  </main>
+  <script src="./game.js"></script>
+</body>
+</html>
