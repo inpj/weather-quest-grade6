@@ -53,6 +53,37 @@
       <div id="canvasWrap" class="canvas-wrap">
         <canvas id="game" width="1280" height="720" aria-label="雙人地面天氣圖格鬥遊戲"></canvas>
         <div id="announcement" class="announcement" aria-live="polite"></div>
+
+        <div id="touchControls" class="touch-controls" aria-label="平板雙人觸碰控制器">
+          <section class="touch-player p1-touch" aria-label="玩家一觸碰控制器">
+            <span class="touch-player-name">P1 冷氣團</span>
+            <div class="dpad" aria-label="玩家一方向鍵">
+              <button class="touch-key up" data-key="w" type="button" aria-label="玩家一向上跳躍">▲</button>
+              <button class="touch-key left" data-key="a" type="button" aria-label="玩家一向左">◀</button>
+              <button class="touch-key down" data-key="s" type="button" aria-label="玩家一向下防禦">▼</button>
+              <button class="touch-key right" data-key="d" type="button" aria-label="玩家一向右">▶</button>
+            </div>
+            <div class="touch-actions">
+              <button class="touch-action attack cold-attack" data-key="f" type="button"><small>近身</small>攻擊</button>
+              <button class="touch-action special cold-special" data-key="g" type="button"><small>按住蓄力</small>冷鋒</button>
+            </div>
+          </section>
+
+          <section class="touch-player p2-touch" aria-label="玩家二觸碰控制器">
+            <span class="touch-player-name">P2 暖氣團</span>
+            <div class="dpad" aria-label="玩家二方向鍵">
+              <button class="touch-key up" data-key="ArrowUp" type="button" aria-label="玩家二向上跳躍">▲</button>
+              <button class="touch-key left" data-key="ArrowLeft" type="button" aria-label="玩家二向左">◀</button>
+              <button class="touch-key down" data-key="ArrowDown" type="button" aria-label="玩家二向下防禦">▼</button>
+              <button class="touch-key right" data-key="ArrowRight" type="button" aria-label="玩家二向右">▶</button>
+            </div>
+            <div class="touch-actions">
+              <button class="touch-action attack warm-attack" data-key="j" type="button"><small>近身</small>攻擊</button>
+              <button class="touch-action special warm-special" data-key="k" type="button"><small>按住蓄力</small>暖鋒</button>
+            </div>
+          </section>
+        </div>
+
         <div id="startOverlay" class="overlay active">
           <div class="overlay-card title-card">
             <p class="eyebrow">SURFACE WEATHER CHART DUEL</p>
@@ -62,6 +93,7 @@
               <div><b>P1 寒潮・藍鋒</b><span>A / D 移動　W 跳　S 防禦</span><span>F 近攻　<strong>按住 G 蓄力、放開射冷鋒</strong></span></div>
               <div><b>P2 暖流・赤鋒</b><span>← / → 移動　↑ 跳　↓ 防禦</span><span>J 近攻　<strong>按住 K 蓄力、放開射暖鋒</strong></span></div>
             </div>
+            <p class="tablet-hint">📱 平板／觸控裝置會自動出現左右各一組大型觸碰控制器，可兩人同時操作。</p>
             <button id="startBtn" class="ui-btn primary big" type="button">⚔ 開始雙人對戰</button>
           </div>
         </div>
@@ -105,10 +137,10 @@
     <dialog id="helpDialog" class="help-dialog">
       <form method="dialog" class="dialog-head"><div><p class="kicker">HOW TO PLAY</p><h2>操作與科學規則</h2></div><button class="ui-btn" value="cancel">關閉 ✕</button></form>
       <div class="help-grid">
-        <article><h3>① 鋒面蓄力</h3><p>按住 G 或 K 會蓄力。蓄力分 1、2、3 級，鋒面越大、速度與傷害越高。</p></article>
-        <article><h3>② 正面碰撞</h3><p>冷鋒與暖鋒在空中碰撞時，較強者會突破；同級則互相抵銷並形成滯留鋒。</p></article>
-        <article><h3>③ 滯留鋒</h3><p>滯留鋒會停留約 3 秒並產生降雨區。這把「兩氣團勢力相當、鋒面移動慢」直接做成遊戲機制。</p></article>
-        <article><h3>④ 勝負</h3><p>三戰兩勝。時間歸零時生命值較高者勝；近身攻擊或鋒面命中都能削減生命值。</p></article>
+        <article><h3>① 平板雙人觸控</h3><p>觸控裝置會在戰場左、右各出現一組控制器。方向鍵可移動、跳躍與防禦；「攻擊」是近身攻擊；「冷鋒／暖鋒」按住可蓄力，放開發射。支援兩位玩家同時多點觸控。</p></article>
+        <article><h3>② 鋒面蓄力</h3><p>鍵盤按住 G／K，或平板按住冷鋒／暖鋒按鈕。蓄力分 1、2、3 級，鋒面越大、速度與傷害越高。</p></article>
+        <article><h3>③ 正面碰撞</h3><p>冷鋒與暖鋒在空中碰撞時，較強者會突破；同級則互相抵銷並形成滯留鋒。</p></article>
+        <article><h3>④ 滯留鋒與勝負</h3><p>滯留鋒會停留約 3 秒並產生降雨區。遊戲採三戰兩勝，時間歸零時生命值較高者勝。</p></article>
       </div>
     </dialog>
   </main>
