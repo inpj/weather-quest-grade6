@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 300">
+<defs>
+ <linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#7fe4ff"/><stop offset="1" stop-color="#0877d8"/></linearGradient>
+ <filter id="g"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<ellipse cx="110" cy="282" rx="72" ry="13" fill="#000" opacity=".28"/>
+<g filter="url(#g)">
+ <path d="M63 92c0-33 21-60 47-60s47 27 47 60v57c0 23-18 42-42 42h-10c-24 0-42-19-42-42z" fill="url(#b)" stroke="#d9f8ff" stroke-width="6"/>
+ <path d="M70 103 40 139l27 14 18-25zM150 103l31 36-27 14-19-25z" fill="#56cfff" stroke="#d9f8ff" stroke-width="5"/>
+ <path d="M84 184 58 260l32 8 24-62zM136 184l26 76-32 8-24-62z" fill="#0a6dc0" stroke="#d9f8ff" stroke-width="5"/>
+ <circle cx="93" cy="91" r="7" fill="#06213b"/><circle cx="127" cy="91" r="7" fill="#06213b"/>
+ <path d="M91 120q19 15 38 0" fill="none" stroke="#06213b" stroke-width="6" stroke-linecap="round"/>
+ <path d="M110 33 86 5h48z" fill="#15a8ff" stroke="#d9f8ff" stroke-width="5"/>
+ <path d="M87 154h46" stroke="#fff" stroke-width="5" opacity=".8"/>
+ <path d="M87 154 98 173 109 154 120 173 131 154" fill="#15a8ff" stroke="#d9f8ff" stroke-width="4"/>
+ <path d="M47 62q63-47 126 0" fill="none" stroke="#7fe4ff" stroke-width="8" stroke-linecap="round" opacity=".8"/>
+</g>
+<text x="110" y="226" text-anchor="middle" font-family="sans-serif" font-size="24" font-weight="700" fill="#e9fbff">COLD</text>
+</svg>
