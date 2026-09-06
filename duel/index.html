@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#07101f">
-  <meta name="description" content="地面天氣圖大決鬥：用雙人對戰理解冷鋒、暖鋒、滯留鋒與地面天氣圖符號。">
+  <meta name="description" content="地面天氣圖大決鬥：用雙人對戰理解冷鋒、暖鋒、滯留鋒、高低氣壓與颱風。">
   <title>地面天氣圖大決鬥｜雙人氣團鋒面對戰</title>
   <link rel="stylesheet" href="./style.css">
 </head>
@@ -12,9 +12,9 @@
   <main class="shell">
     <header class="masthead">
       <div>
-        <p class="kicker">GRADE 6 · SURFACE WEATHER BATTLE · v0.3</p>
+        <p class="kicker">GRADE 6 · SURFACE WEATHER BATTLE · v0.4</p>
         <h1>地面天氣圖大決鬥</h1>
-        <p class="subtitle">冷氣團 vs 暖氣團｜把鋒面符號變成真正的招式</p>
+        <p class="subtitle">冷氣團 vs 暖氣團｜把鋒面、高低氣壓與颱風變成真正的招式</p>
       </div>
       <nav class="top-actions" aria-label="頁面操作">
         <a class="ui-btn ghost" href="../">← 回天氣探險隊</a>
@@ -57,10 +57,10 @@
           <div class="overlay-card title-card">
             <p class="eyebrow">SURFACE WEATHER CHART DUEL</p>
             <h2>鋒面開戰！</h2>
-            <p>冷氣團與暖氣團各自蓄力，把<strong>冷鋒／暖鋒</strong>像波動拳一樣打出去。兩個鋒面力量相同時，會在碰撞處形成<strong>滯留鋒</strong>。</p>
+            <p>冷氣團與暖氣團各自蓄力，把<strong>冷鋒／暖鋒</strong>像波動拳一樣打出去；能量累積後還可使用<strong>高低氣壓特殊技</strong>與<strong>颱風必殺技</strong>。</p>
             <div class="quick-controls">
-              <div><b>P1 寒潮・藍鋒</b><span>A / D 移動　W 跳　S 防禦</span><span>F 近攻　<strong>按住 G 蓄力、放開射冷鋒</strong></span></div>
-              <div><b>P2 暖流・赤鋒</b><span>← / → 移動　↑ 跳　↓ 防禦</span><span>J 近攻　<strong>按住 K 蓄力、放開射暖鋒</strong></span></div>
+              <div><b>P1 寒潮・藍鋒</b><span>A / D 移動　W 跳　S 防禦</span><span>F 近攻　G 冷鋒　<strong>H 高壓盾　R 颱風</strong></span></div>
+              <div><b>P2 暖流・赤鋒</b><span>← / → 移動　↑ 跳　↓ 防禦</span><span>J 近攻　K 暖鋒　<strong>L 低壓吸引　I 颱風</strong></span></div>
             </div>
             <button id="startBtn" class="ui-btn primary big" type="button">⚔ 開始雙人對戰</button>
           </div>
@@ -79,13 +79,13 @@
         <article>
           <b class="cold-text">P1｜寒潮・藍鋒</b>
           <span><kbd>A</kbd><kbd>D</kbd> 移動　<kbd>W</kbd> 跳　<kbd>S</kbd> 防禦　<kbd>F</kbd> 近攻</span>
-          <span><kbd>G</kbd> 按住蓄力 → 放開發射冷鋒</span>
+          <span><kbd>G</kbd> 冷鋒　<kbd>H</kbd> 高氣壓護盾（35%）　<kbd>R</kbd> 颱風（MAX）</span>
         </article>
         <div class="clash-rule"><img src="./assets/stationary-front.svg" alt=""><div><b>勢均力敵＝滯留鋒</b><span>同級鋒面正面碰撞會停滯 3 秒，並出現持續降雨區。</span></div></div>
         <article class="right-control">
           <b class="warm-text">P2｜暖流・赤鋒</b>
           <span><kbd>←</kbd><kbd>→</kbd> 移動　<kbd>↑</kbd> 跳　<kbd>↓</kbd> 防禦　<kbd>J</kbd> 近攻</span>
-          <span><kbd>K</kbd> 按住蓄力 → 放開發射暖鋒</span>
+          <span><kbd>K</kbd> 暖鋒　<kbd>L</kbd> 低氣壓吸引（35%）　<kbd>I</kbd> 颱風（MAX）</span>
         </article>
       </div>
     </section>
@@ -109,12 +109,15 @@
       <div class="help-grid">
         <article><h3>① 鋒面蓄力</h3><p>按住 G 或 K 會蓄力。蓄力分 1、2、3 級，鋒面越大、速度與傷害越高。</p></article>
         <article><h3>② 正面碰撞</h3><p>冷鋒與暖鋒在空中碰撞時，較強者會突破；同級則互相抵銷並形成滯留鋒。</p></article>
-        <article><h3>③ 滯留鋒</h3><p>滯留鋒會停留約 3 秒並產生降雨區。這把「兩氣團勢力相當、鋒面移動慢」直接做成遊戲機制。</p></article>
-        <article><h3>④ 勝負</h3><p>三戰兩勝。時間歸零時生命值較高者勝；近身攻擊或鋒面命中都能削減生命值。</p></article>
+        <article><h3>③ 高、低氣壓特殊技</h3><p>P1 的 H 以高氣壓下沉與輻散概念把飛來的鋒面往外推；P2 的 L 以低氣壓地面輻合概念把對手與鋒面往中心拉。每次消耗 35% 能量。</p></article>
+        <article><h3>④ 颱風必殺技</h3><p>能量到 MAX 時，P1 按 R、P2 按 I。颱風會形成旋轉風雨區、吸引對手並造成連續傷害。</p></article>
+        <article><h3>⑤ 滯留鋒</h3><p>滯留鋒會停留約 3 秒並產生降雨區。這把「兩氣團勢力相當、鋒面移動慢」直接做成遊戲機制。</p></article>
+        <article><h3>⑥ 勝負</h3><p>三戰兩勝。時間歸零時生命值較高者勝；生命值歸零會出現 K.O. 與畫面震動。</p></article>
       </div>
     </dialog>
   </main>
   <script src="./game.js"></script>
   <script src="./fighter-skins.js"></script>
+  <script src="./special-skills.js"></script>
 </body>
 </html>
