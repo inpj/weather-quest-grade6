@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#07101f">
-  <meta name="description" content="地面天氣圖大決鬥：用雙人對戰理解冷鋒、暖鋒、滯留鋒與地面天氣圖符號。">
+  <meta name="description" content="地面天氣圖大決鬥：用雙人對戰理解冷鋒、暖鋒、滯留鋒與季節天氣。">
   <title>地面天氣圖大決鬥｜雙人氣團鋒面對戰</title>
   <link rel="stylesheet" href="./style.css">
 </head>
@@ -14,7 +14,7 @@
       <div>
         <p class="kicker">GRADE 6 · SURFACE WEATHER BATTLE</p>
         <h1>地面天氣圖大決鬥</h1>
-        <p class="subtitle">冷氣團 vs 暖氣團｜把鋒面符號變成真正的招式</p>
+        <p class="subtitle">冷氣團 vs 暖氣團｜操作維持簡單，加入三種季節天氣戰場</p>
       </div>
       <nav class="top-actions" aria-label="頁面操作">
         <a class="ui-btn ghost" href="../">← 回天氣探險隊</a>
@@ -32,7 +32,7 @@
     <section class="arena-frame">
       <div class="hud-row">
         <article class="fighter-card cold-card">
-          <div class="fighter-title"><img src="./assets/high-pressure.svg" alt="高氣壓符號"><div><small>PLAYER 1</small><strong>寒潮・藍鋒</strong></div></div>
+          <div class="fighter-title"><img class="fighter-avatar" src="./assets/cold-fighter.svg" alt="冷氣團角色"><div><small>PLAYER 1</small><strong>寒潮・藍鋒</strong></div></div>
           <div class="bar hp"><span id="p1Hp"></span></div>
           <div class="meter-line"><span>鋒面能量</span><div class="bar energy"><span id="p1Energy"></span></div><b id="p1Power">0%</b></div>
         </article>
@@ -41,10 +41,11 @@
           <span id="roundLabel">ROUND 1</span>
           <strong id="timer">90</strong>
           <div class="round-score"><i id="p1Wins"></i><b>VS</b><i id="p2Wins"></i></div>
+          <em id="stageHud">冬季寒流</em>
         </div>
 
         <article class="fighter-card warm-card">
-          <div class="fighter-title reverse"><img src="./assets/low-pressure.svg" alt="低氣壓符號"><div><small>PLAYER 2</small><strong>暖流・赤鋒</strong></div></div>
+          <div class="fighter-title reverse"><img class="fighter-avatar" src="./assets/warm-fighter.svg" alt="暖氣團角色"><div><small>PLAYER 2</small><strong>暖流・赤鋒</strong></div></div>
           <div class="bar hp"><span id="p2Hp"></span></div>
           <div class="meter-line reverse-line"><b id="p2Power">0%</b><div class="bar energy"><span id="p2Energy"></span></div><span>鋒面能量</span></div>
         </article>
@@ -53,11 +54,23 @@
       <div id="canvasWrap" class="canvas-wrap">
         <canvas id="game" width="1280" height="720" aria-label="雙人地面天氣圖格鬥遊戲"></canvas>
         <div id="announcement" class="announcement" aria-live="polite"></div>
+
         <div id="startOverlay" class="overlay active">
           <div class="overlay-card title-card">
             <p class="eyebrow">SURFACE WEATHER CHART DUEL</p>
             <h2>鋒面開戰！</h2>
-            <p>冷氣團與暖氣團各自蓄力，把<strong>冷鋒／暖鋒</strong>像波動拳一樣打出去。兩個鋒面力量相同時，會在碰撞處形成<strong>滯留鋒</strong>。</p>
+            <p>角色固定為<strong>冷氣團 vs 暖氣團</strong>，操作不增加新招式。只選擇一個天氣戰場，就可以開始對戰。</p>
+
+            <div class="stage-select" aria-label="選擇天氣戰場">
+              <strong>選擇戰場</strong>
+              <div class="stage-buttons">
+                <button class="stage-btn selected" data-stage="winter" type="button">❄️ 冬季寒流<small>冷鋒更快、更痛；東北季風向西推</small></button>
+                <button class="stage-btn" data-stage="meiyu" type="button">🌧️ 梅雨季<small>中央雨帶減速；滯留鋒維持更久</small></button>
+                <button class="stage-btn" data-stage="typhoon" type="button">🌀 颱風季<small>左右交替強陣風；角色與鋒面都偏移</small></button>
+              </div>
+              <span id="stageLabel" class="stage-rule">冬季寒流｜冷鋒速度與傷害提升，週期出現東北季風。</span>
+            </div>
+
             <div class="quick-controls">
               <div><b>P1 寒潮・藍鋒</b><span>A / D 移動　W 跳　S 防禦</span><span>F 近攻　<strong>按住 G 蓄力、放開射冷鋒</strong></span></div>
               <div><b>P2 暖流・赤鋒</b><span>← / → 移動　↑ 跳　↓ 防禦</span><span>J 近攻　<strong>按住 K 蓄力、放開射暖鋒</strong></span></div>
@@ -65,12 +78,13 @@
             <button id="startBtn" class="ui-btn primary big" type="button">⚔ 開始雙人對戰</button>
           </div>
         </div>
+
         <div id="endOverlay" class="overlay">
           <div class="overlay-card end-card">
             <p class="eyebrow">BATTLE RESULT</p>
             <h2 id="winnerTitle">勝負已分</h2>
             <p id="winnerText"></p>
-            <div class="end-actions"><button id="rematchBtn" class="ui-btn primary big" type="button">↻ 再戰一場</button><a href="../" class="ui-btn">回天氣探險隊</a></div>
+            <div class="end-actions"><button id="rematchBtn" class="ui-btn primary big" type="button">↻ 同戰場再戰</button><button id="changeStageBtn" class="ui-btn" type="button">☁ 更換戰場</button><a href="../" class="ui-btn">回天氣探險隊</a></div>
           </div>
         </div>
       </div>
@@ -81,7 +95,7 @@
           <span><kbd>A</kbd><kbd>D</kbd> 移動　<kbd>W</kbd> 跳　<kbd>S</kbd> 防禦　<kbd>F</kbd> 近攻</span>
           <span><kbd>G</kbd> 按住蓄力 → 放開發射冷鋒</span>
         </article>
-        <div class="clash-rule"><img src="./assets/stationary-front.svg" alt=""><div><b>勢均力敵＝滯留鋒</b><span>同級鋒面正面碰撞會停滯 3 秒，並出現持續降雨區。</span></div></div>
+        <div class="clash-rule"><img src="./assets/stationary-front.svg" alt=""><div><b>勢均力敵＝滯留鋒</b><span>同級鋒面正面碰撞會形成滯留鋒與降雨區。</span><span id="battleStageChip" class="stage-chip">目前戰場：冬季寒流</span></div></div>
         <article class="right-control">
           <b class="warm-text">P2｜暖流・赤鋒</b>
           <span><kbd>←</kbd><kbd>→</kbd> 移動　<kbd>↑</kbd> 跳　<kbd>↓</kbd> 防禦　<kbd>J</kbd> 近攻</span>
@@ -91,24 +105,35 @@
     </section>
 
     <section class="asset-lab">
-      <div class="section-head"><div><p class="kicker">GAME ASSET LAB</p><h2>地面天氣圖符號素材</h2></div><p>素材全部用原創 SVG 重繪，可直接在教學投影片、遊戲或網頁中使用。</p></div>
+      <div class="section-head"><div><p class="kicker">WEATHER STAGES</p><h2>三種戰場，三種天氣效果</h2></div><p>不增加按鍵，只讓環境本身成為氣象課的一部分。</p></div>
+      <div class="help-grid stage-info-grid">
+        <article><h3>❄️ 冬季寒流</h3><p>冷鋒速度與傷害提升。每隔一段時間出現「東北季風增強」，角色與鋒面一起被往西側推動。</p></article>
+        <article><h3>🌧️ 梅雨季</h3><p>中央週期出現持續雨帶，進入雨區的角色與鋒面會減速；由碰撞形成的滯留鋒也會維持更久。</p></article>
+        <article><h3>🌀 颱風季</h3><p>強陣風會左右交替出現，使兩名角色以及飛行中的冷、暖鋒一起偏移，增加判斷風向的挑戰。</p></article>
+      </div>
+    </section>
+
+    <section class="asset-lab">
+      <div class="section-head"><div><p class="kicker">GAME ASSET LAB</p><h2>角色與地面天氣圖素材</h2></div><p>冷暖氣團角色保留簡單辨識，身上直接使用冷鋒三角與暖鋒半圓的視覺語言。</p></div>
       <div class="asset-grid">
+        <a href="./assets/cold-fighter.svg"><img src="./assets/cold-fighter.svg" alt="冷氣團角色素材"><b>寒潮・藍鋒</b><span>FIGHTER SVG</span></a>
+        <a href="./assets/warm-fighter.svg"><img src="./assets/warm-fighter.svg" alt="暖氣團角色素材"><b>暖流・赤鋒</b><span>FIGHTER SVG</span></a>
         <a href="./assets/high-pressure.svg"><img src="./assets/high-pressure.svg" alt="高氣壓素材"><b>高氣壓中心 H</b><span>SVG</span></a>
         <a href="./assets/low-pressure.svg"><img src="./assets/low-pressure.svg" alt="低氣壓素材"><b>低氣壓中心 L</b><span>SVG</span></a>
-        <a href="./assets/isobars.svg"><img src="./assets/isobars.svg" alt="等壓線素材"><b>等壓線</b><span>SVG</span></a>
         <a href="./assets/cold-front.svg"><img src="./assets/cold-front.svg" alt="冷鋒素材"><b>冷鋒</b><span>SVG</span></a>
         <a href="./assets/warm-front.svg"><img src="./assets/warm-front.svg" alt="暖鋒素材"><b>暖鋒</b><span>SVG</span></a>
         <a href="./assets/stationary-front.svg"><img src="./assets/stationary-front.svg" alt="滯留鋒素材"><b>滯留鋒</b><span>SVG</span></a>
+        <a href="./assets/isobars.svg"><img src="./assets/isobars.svg" alt="等壓線素材"><b>等壓線</b><span>SVG</span></a>
       </div>
     </section>
 
     <dialog id="helpDialog" class="help-dialog">
       <form method="dialog" class="dialog-head"><div><p class="kicker">HOW TO PLAY</p><h2>操作與科學規則</h2></div><button class="ui-btn" value="cancel">關閉 ✕</button></form>
       <div class="help-grid">
-        <article><h3>① 鋒面蓄力</h3><p>按住 G 或 K 會蓄力。蓄力分 1、2、3 級，鋒面越大、速度與傷害越高。</p></article>
-        <article><h3>② 正面碰撞</h3><p>冷鋒與暖鋒在空中碰撞時，較強者會突破；同級則互相抵銷並形成滯留鋒。</p></article>
-        <article><h3>③ 滯留鋒</h3><p>滯留鋒會停留約 3 秒並產生降雨區。這把「兩氣團勢力相當、鋒面移動慢」直接做成遊戲機制。</p></article>
-        <article><h3>④ 勝負</h3><p>三戰兩勝。時間歸零時生命值較高者勝；近身攻擊或鋒面命中都能削減生命值。</p></article>
+        <article><h3>① 操作維持簡單</h3><p>只有移動、跳躍、防禦、近攻與一種鋒面波。沒有角色技、MAX、Combo 或選角。</p></article>
+        <article><h3>② 鋒面蓄力</h3><p>按住 G 或 K 蓄力，分 1、2、3 級；鋒面越大，速度與傷害越高。</p></article>
+        <article><h3>③ 正面碰撞</h3><p>冷鋒與暖鋒同級碰撞會形成滯留鋒；不同級時，較強的一方突破。</p></article>
+        <article><h3>④ 戰場環境</h3><p>冬季看東北季風、梅雨看雨帶與滯留、颱風看強陣風。戰場效果直接對應季節天氣。</p></article>
       </div>
     </dialog>
   </main>
