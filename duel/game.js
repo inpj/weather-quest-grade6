@@ -28,17 +28,20 @@ const STAGES = {
   winter: {
     name: '冬季寒流',
     desc: '遊戲以較快的冷鋒與較強天氣影響，模擬強冷空氣快速南下。',
-    tip: '大陸冷高壓增強 → 台灣常位在高壓東南側 → 東北季風增強；橫向畫面只呈現向西的水平分量。'
+    tip: '大陸冷高壓增強 → 台灣常位在高壓東南側 → 東北季風增強。這是戰場背景，不是任何一方獲勝造成的。',
+    resultNote: '戰場背景為冬季寒流；東北季風屬於環境條件，與本局誰獲勝是兩件不同的事。'
   },
   meiyu: {
     name: '梅雨季',
     desc: '梅雨鋒面附近形成持續雲雨帶，遊戲以雨區減速與較長滯留時間表示。',
-    tip: '暖濕空氣、水氣輻合與上升運動有利於雲雨發展；雨區減速是遊戲化效果。'
+    tip: '暖濕空氣、水氣輻合與上升運動有利於雲雨發展；雨區減速是遊戲化效果。',
+    resultNote: '戰場背景為梅雨季；雲雨帶是環境條件，不代表哪一側氣團一定獲勝。'
   },
   typhoon: {
     name: '颱風季',
     desc: '颱風環流可帶來強風與陣風；遊戲將風向變化簡化為左右水平推力。',
-    tip: '真實風向取決於颱風中心相對位置、環流、地形與局部對流，不會固定左右交替。'
+    tip: '真實風向取決於颱風中心相對位置、環流、地形與局部對流，不會固定左右交替。',
+    resultNote: '戰場背景為颱風季；陣風是外在環境效果，不代表哪一側氣團一定獲勝。'
   }
 };
 
@@ -89,12 +92,25 @@ function fighter(x, side) {
 let p1 = fighter(210, 1);
 let p2 = fighter(988, 2);
 
-function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
-function overlap(a, b) { return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
+function clamp(n, a, b) {
+  return Math.max(a, Math.min(b, n));
+}
+
+function overlap(a, b) {
+  return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+}
+
+function clearAnnouncement() {
+  clearTimeout(announce.t);
+  ui.announcement.textContent = '';
+}
+
 function announce(text, ms = 650) {
   ui.announcement.textContent = text;
   clearTimeout(announce.t);
-  announce.t = setTimeout(() => { ui.announcement.textContent = ''; }, ms);
+  announce.t = setTimeout(() => {
+    ui.announcement.textContent = '';
+  }, ms);
 }
 
 function tone(freq = 220, duration = .06) {
@@ -119,6 +135,7 @@ function frontLevel(charge) {
 }
 
 function resetRound() {
+  clearAnnouncement();
   p1 = fighter(210, 1);
   p2 = fighter(988, 2);
   projectiles = [];
@@ -132,7 +149,7 @@ function resetRound() {
   rainBand = null;
   ui.roundLabel.textContent = 'ROUND ' + round;
   ui.stageHud.textContent = STAGES[selectedStage].name;
-  ui.battleStageChip.textContent = '目前戰場：' + STAGES[selectedStage].name;
+  ui.battleStageChip.textContent = '目前戰場：' + STAGES[selectedStage].name + '（環境）';
   announce('ROUND ' + round, 850);
   syncUI();
 }
@@ -151,6 +168,7 @@ function syncUI() {
 
 function fireFront(p, type) {
   if (p.cool > 0) return;
+
   const level = frontLevel(p.charge);
   let speed = 5.8 + level * 1.25;
   let damage = 5 + level * 4;
@@ -186,7 +204,12 @@ function hit(target, damage, dir) {
   target.hp = Math.max(0, target.hp - damage * guardMultiplier);
   target.vx += dir * 5 * guardMultiplier;
   target.flash = 6;
-  effects.push({ x: target.x + target.w / 2, y: target.y + 45, life: 22, kind: target.side === 1 ? 'warm' : 'cold' });
+  effects.push({
+    x: target.x + target.w / 2,
+    y: target.y + 45,
+    life: 22,
+    kind: target.side === 1 ? 'warm' : 'cold'
+  });
   tone(90, .08);
 }
 
@@ -202,8 +225,13 @@ function resolveBodies() {
   const amount = c1 < c2 ? p1.x + p1.w - p2.x : p2.x + p2.w - p1.x;
   if (amount <= 0) return;
   const push = amount / 2 + .5;
-  if (c1 < c2) { p1.x -= push; p2.x += push; }
-  else { p1.x += push; p2.x -= push; }
+  if (c1 < c2) {
+    p1.x -= push;
+    p2.x += push;
+  } else {
+    p1.x += push;
+    p2.x -= push;
+  }
   p1.x = clamp(p1.x, 24, W - 24 - p1.w);
   p2.x = clamp(p2.x, 24, W - 24 - p2.w);
 }
@@ -256,7 +284,12 @@ function updatePlayer(p, left, right, jump, guard, attack, shoot, type) {
   if (p.flash > 0) p.flash--;
 
   if (p.attack === 8) {
-    const box = { x: p.dir > 0 ? p.x + p.w - 2 : p.x - 55, y: p.y + 24, w: 57, h: 62 };
+    const box = {
+      x: p.dir > 0 ? p.x + p.w - 2 : p.x - 55,
+      y: p.y + 24,
+      w: 57,
+      h: 62
+    };
     const foe = p.side === 1 ? p2 : p1;
     if (overlap(box, foe)) {
       hit(foe, 5, p.dir);
@@ -287,6 +320,7 @@ function projectileStep() {
     q.x += q.vx;
     q.y += q.vy;
     q.life--;
+
     const foe = q.side === 1 ? p2 : p1;
     if (overlap({ x: q.x - q.r, y: q.y - q.r, w: q.r * 2, h: q.r * 2 }, foe)) {
       hit(foe, q.damage, Math.sign(q.vx));
@@ -326,21 +360,21 @@ function stageStep(dt) {
     if (phase > 7.8) {
       if (windPulse <= 0) {
         windPulse = 1.3;
-        announce('大陸冷高壓增強 → 東北季風增強', 1200);
+        announce('環境事件：東北季風增強', 1000);
       }
       windPulse = Math.max(0, windPulse - dt / 1000);
       const westwardPush = -.11;
       p1.vx += westwardPush;
       p2.vx += westwardPush;
-      projectiles.forEach(q => { q.vx += westwardPush * .035; });
+      projectiles.forEach(q => {
+        q.vx += westwardPush * .035;
+      });
     }
   } else if (selectedStage === 'meiyu') {
     const cycle = stageClock % 12;
-    if (cycle < 7) {
-      rainBand = { x: W / 2 + Math.sin(stageClock * .65) * 90, width: 330 };
-    } else {
-      rainBand = null;
-    }
+    rainBand = cycle < 7
+      ? { x: W / 2 + Math.sin(stageClock * .65) * 90, width: 330 }
+      : null;
   } else if (selectedStage === 'typhoon') {
     const cycle = stageClock % 8;
     if (cycle < 1.7) {
@@ -348,7 +382,7 @@ function stageStep(dt) {
       if (windPulse <= 0) {
         windDir = newDir;
         windPulse = 1.7;
-        announce(windDir > 0 ? '颱風環流陣風 →（遊戲化）' : '← 颱風環流陣風（遊戲化）', 900);
+        announce(windDir > 0 ? '環境事件：颱風陣風 →' : '← 環境事件：颱風陣風', 900);
       }
       windPulse = Math.max(0, windPulse - dt / 1000);
       const push = .16 * windDir;
@@ -362,28 +396,53 @@ function stageStep(dt) {
   }
 }
 
+function outcomeFor(winner) {
+  if (winner === 1) {
+    return {
+      short: '冷氣團勝！冷氣團推進較強',
+      detail: '冷氣團推進較強 → 冷鋒持續推進 → 氣溫下降。'
+    };
+  }
+  if (winner === 2) {
+    return {
+      short: '暖氣團勝！暖氣團推進較強',
+      detail: '暖氣團推進較強 → 冷空氣勢力減弱或退縮 → 氣溫回升。'
+    };
+  }
+  return {
+    short: '平手：兩側推進相近',
+    detail: '兩側推進相近 → 鋒面移動緩慢；遊戲中以滯留狀態表示。'
+  };
+}
+
 function roundResult() {
   if (roundOver) return;
-  if (timer <= 0 || p1.hp <= 0 || p2.hp <= 0) {
-    roundOver = true;
-    const winner = p1.hp === p2.hp ? 0 : (p1.hp > p2.hp ? 1 : 2);
-    if (winner === 1) p1Wins++;
-    if (winner === 2) p2Wins++;
-    announce(winner ? `PLAYER ${winner} WIN!` : 'DRAW!', 1400);
-    syncUI();
+  if (timer > 0 && p1.hp > 0 && p2.hp > 0) return;
 
-    setTimeout(() => {
-      if (p1Wins >= 2 || p2Wins >= 2) {
-        running = false;
-        document.getElementById('winnerTitle').textContent = (p1Wins > p2Wins ? '冷氣團・藍鋒' : '暖氣團・赤鋒') + ' 勝利！';
-        document.getElementById('winnerText').textContent = `最終比分 ${p1Wins}：${p2Wins}。本場戰場：${STAGES[selectedStage].name}。`;
-        document.getElementById('endOverlay').classList.add('active');
-      } else {
-        round++;
-        resetRound();
-      }
-    }, 1500);
-  }
+  roundOver = true;
+  const winner = p1.hp === p2.hp ? 0 : (p1.hp > p2.hp ? 1 : 2);
+  if (winner === 1) p1Wins++;
+  if (winner === 2) p2Wins++;
+
+  const outcome = outcomeFor(winner);
+  clearAnnouncement();
+  announce(outcome.short, 1800);
+  syncUI();
+
+  setTimeout(() => {
+    if (p1Wins >= 2 || p2Wins >= 2) {
+      running = false;
+      const matchWinner = p1Wins > p2Wins ? 1 : 2;
+      const matchOutcome = outcomeFor(matchWinner);
+      document.getElementById('winnerTitle').textContent = matchWinner === 1 ? '冷氣團・藍鋒 勝利！' : '暖氣團・赤鋒 勝利！';
+      document.getElementById('winnerText').textContent =
+        `最終比分 ${p1Wins}：${p2Wins}。對戰結果：${matchOutcome.detail} ${STAGES[selectedStage].resultNote}`;
+      document.getElementById('endOverlay').classList.add('active');
+    } else {
+      round++;
+      resetRound();
+    }
+  }, 1900);
 }
 
 function update(dt) {
@@ -419,6 +478,7 @@ function drawFrontSymbol(x, y, type, dir, scale = 1) {
   ctx.moveTo(-34, 0);
   ctx.lineTo(34, 0);
   ctx.stroke();
+
   for (let i = -20; i <= 20; i += 20) {
     ctx.beginPath();
     if (type === 'cold') {
@@ -469,13 +529,14 @@ function drawBackground() {
       const y = (i * 83) % 520;
       ctx.fillRect(x, y, 2, 2);
     }
-    ctx.font = 'bold 24px monospace';
+    ctx.font = 'bold 22px monospace';
     ctx.fillStyle = '#bfe9ff';
-    ctx.fillText('大陸冷高壓 → 東北季風', 38, 70);
+    ctx.fillText('冬季背景：大陸冷高壓／東北季風', 38, 70);
   } else if (selectedStage === 'meiyu') {
     drawWeatherMapBase('#273149', '#53636e');
     ctx.fillStyle = '#9fdcff33';
     ctx.fillRect(0, 110, W, 260);
+
     if (rainBand) {
       ctx.fillStyle = '#6fc9ff22';
       ctx.fillRect(rainBand.x - rainBand.width / 2, 70, rainBand.width, ground - 70);
@@ -485,9 +546,10 @@ function drawBackground() {
         line(x, y, x - 8, y + 20, '#9bdcff99', 2);
       }
     }
-    ctx.font = 'bold 24px monospace';
+
+    ctx.font = 'bold 22px monospace';
     ctx.fillStyle = '#a8ddff';
-    ctx.fillText('梅雨鋒面雲雨帶', 40, 70);
+    ctx.fillText('梅雨背景：鋒面雲雨帶', 40, 70);
   } else {
     drawWeatherMapBase('#18304a', '#426777');
     const cx = W * .78;
@@ -499,9 +561,9 @@ function drawBackground() {
       ctx.arc(cx, cy, r, stageClock * .8, stageClock * .8 + Math.PI * 1.4);
       ctx.stroke();
     }
-    ctx.font = 'bold 24px monospace';
+    ctx.font = 'bold 22px monospace';
     ctx.fillStyle = '#d2f4ff';
-    ctx.fillText('颱風環流與陣風', 40, 70);
+    ctx.fillText('颱風背景：環流與陣風', 40, 70);
   }
 }
 
@@ -510,6 +572,7 @@ function drawFighterSprite(p, img, type) {
   ctx.translate(p.x + p.w / 2, p.y + p.h / 2);
   ctx.scale(p.dir, 1);
   if (p.flash % 2) ctx.globalAlpha = .45;
+
   const bob = p.y >= ground - p.h - .5 ? Math.sin(performance.now() / 150) * 2 : 0;
   ctx.drawImage(img, -57, -80 + bob, 114, 154);
 
@@ -537,6 +600,7 @@ function drawFighterSprite(p, img, type) {
     ctx.arc(0, 0, 58 + p.charge * .15, 0, Math.PI * 2);
     ctx.stroke();
   }
+
   ctx.restore();
 }
 
@@ -545,10 +609,24 @@ function draw() {
 
   if (stationary) {
     ctx.fillStyle = '#7bc7ff33';
-    ctx.fillRect(stationary.x - stationary.width / 2, stationary.y - 140, stationary.width, ground - stationary.y + 140);
+    ctx.fillRect(
+      stationary.x - stationary.width / 2,
+      stationary.y - 140,
+      stationary.width,
+      ground - stationary.y + 140
+    );
+
     for (let y = stationary.y - 110; y < ground; y += 28) {
-      line(stationary.x - 70 + (y % 3) * 20, y, stationary.x - 78 + (y % 3) * 20, y + 18, '#9bdcff99', 1.5);
+      line(
+        stationary.x - 70 + (y % 3) * 20,
+        y,
+        stationary.x - 78 + (y % 3) * 20,
+        y + 18,
+        '#9bdcff99',
+        1.5
+      );
     }
+
     for (let i = -2; i <= 2; i++) {
       const xx = stationary.x + i * 38;
       drawFrontSymbol(xx, stationary.y, i % 2 === 0 ? 'cold' : 'warm', i % 2 === 0 ? 1 : -1, .65);
@@ -558,7 +636,7 @@ function draw() {
   for (const q of projectiles) {
     ctx.shadowBlur = 18;
     ctx.shadowColor = q.type === 'cold' ? '#1bb8ff' : '#ff5a32';
-    drawFrontSymbol(q.x, q.y, q.type, Math.sign(q.vx), .7 + q.level * .18);
+    drawFrontSymbol(q.x, q.y, q.type, Math.sign(q.vx) || 1, .7 + q.level * .18);
     ctx.shadowBlur = 0;
   }
 
@@ -587,9 +665,11 @@ window.addEventListener('keydown', e => {
   keys[e.key.length === 1 ? e.key.toLowerCase() : e.key] = true;
   if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '].includes(e.key)) e.preventDefault();
 });
+
 window.addEventListener('keyup', e => {
   keys[e.key.length === 1 ? e.key.toLowerCase() : e.key] = false;
 });
+
 window.addEventListener('blur', () => {
   for (const k of Object.keys(keys)) keys[k] = false;
 });
@@ -600,14 +680,15 @@ document.querySelectorAll('.stage-btn').forEach(btn => btn.addEventListener('cli
   ui.stageLabel.textContent = STAGES[selectedStage].name + '｜' + STAGES[selectedStage].desc;
   if (ui.scienceTip) ui.scienceTip.textContent = '科學提示：' + STAGES[selectedStage].tip;
   ui.stageHud.textContent = STAGES[selectedStage].name;
-  ui.battleStageChip.textContent = '目前戰場：' + STAGES[selectedStage].name;
+  ui.battleStageChip.textContent = '目前戰場：' + STAGES[selectedStage].name + '（環境）';
 }));
 
 document.getElementById('startBtn').onclick = () => {
   document.getElementById('startOverlay').classList.remove('active');
   running = true;
   round = 1;
-  p1Wins = p2Wins = 0;
+  p1Wins = 0;
+  p2Wins = 0;
   resetRound();
 };
 
@@ -615,7 +696,8 @@ document.getElementById('rematchBtn').onclick = () => {
   document.getElementById('endOverlay').classList.remove('active');
   running = true;
   round = 1;
-  p1Wins = p2Wins = 0;
+  p1Wins = 0;
+  p2Wins = 0;
   resetRound();
 };
 
@@ -625,6 +707,7 @@ document.getElementById('changeStageBtn').onclick = () => {
 };
 
 document.getElementById('helpBtn').onclick = () => document.getElementById('helpDialog').showModal();
+
 document.getElementById('soundBtn').onclick = e => {
   soundOn = !soundOn;
   e.currentTarget.textContent = '♪ 音效：' + (soundOn ? '開' : '關');
